@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interactive 3D Product Viewer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Canvas for Three.js rendering -->
+  <canvas id="viewer-canvas"></canvas>
+
+  <!-- Hidden info panel for clicked parts -->
+  <div id="info-panel">
+    <button id="close-panel" aria-label="Close">&times;</button>
+    <h3 id="part-name"></h3>
+    <p id="part-desc"></p>
+  </div>
+
+  <!-- Import Three.js and OrbitControls via import map -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- Main entry point: import modular scripts -->
+  <script type="module">
+    import { initScene, scene, camera, renderer, controls } from './scripts/initScene.js';
+    import { createProduct, productGroup, interactiveParts } from './scripts/createProduct.js';
+    import { addLighting } from './scripts/addLighting.js';
+    import { setupInteraction } from './scripts/interaction.js';
+    import { startAutoRotate } from './scripts/cameraAnimation.js';
+
+    // Initialize scene, camera, and renderer
+    initScene();
+
+    // Build the product (a simple chair) in the scene
+    createProduct();
+    
+    // Add lights to the scene
+    addLighting();
+
+    // Set up raycasting interactions (click, hover)
+    setupInteraction();
+
+    // Begin automatic camera rotation around the product
+    startAutoRotate();
+
+    // Handle window resizing
+    window.addEventListener('resize', () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+  </script>
+</body>
+</html>
